@@ -4,74 +4,58 @@ import { Label } from "@radix-ui/react-label";
 import { FC } from "react";
 import { FiDelete } from "react-icons/fi";
 import { IoDocumentTextOutline } from "react-icons/io5";
-import { useForm, FormProvider } from "react-hook-form";
+import { Control, useFormContext } from "react-hook-form";
 import { InputField } from "../Input/InputField";
 import { Pictures } from "@/providers/types";
-
-interface FormData {
-  pictures: Pictures[];
-}
+import { CreateFormSchema } from "../validations/validations";
+import { z } from "zod";
 
 interface Props {
-  setPictures: React.Dispatch<React.SetStateAction<Pictures[]>>;
+  control: Control<z.infer<typeof CreateFormSchema>>;
+  onSubmit:(data:z.infer<typeof CreateFormSchema>) => void;
 }
 
-export const AddImage: FC<Props> = ({ setPictures }) => {
-  const formMethods = useForm<FormData>({
-    defaultValues: {
-      pictures: [],
-    },
-  });
-  const { handleSubmit, setValue, watch } = formMethods;
+export const AddImage: FC<Props> = ({ control, onSubmit}) => {
+  const { setValue, watch } = useFormContext();
+  const currentPictures = watch("pictures");
 
-  // Watch the pictures data to dynamically capture updates
-  const picturesData = watch("pictures", []);
-
-  // Handle file change (add new files)
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      // uploadImages(event.target.files[0])
-      // console.log(event.target.files[0]);
       const newPictures: Pictures[] = Array.from(event.target.files).map((file) => ({
         img: file,
         desc: "",
-        urlImg:""
+        urlImg: ""
       }));
-
-      setPictures((prevPics) => {
-        const updatedPictures = [...prevPics, ...newPictures];
-        setValue("pictures", updatedPictures); // Update the form with new pictures
-        return updatedPictures;
-      });
+      setValue("pictures", [...currentPictures, ...newPictures]);
     }
   };
 
   const deleteImg = (index: number) => {
-    const updatedPictures = picturesData.filter((_, i) => i !== index);
-    setPictures(updatedPictures);
-    setValue("pictures", updatedPictures);
-  };
-
-  const onSubmit = (data: FormData) => {
-    setPictures(data.pictures);
+    const updatedPictures = [...currentPictures].filter((_, i) => i !== index);
+    setValue("pictures", [...updatedPictures]);
+    onSubmit(watch()) //updata useForm
   };
 
   return (
-    <FormProvider {...formMethods}>
-      <form onChange={handleSubmit(onSubmit)}>
-        <div className="flex gap-2 flex-wrap">
-          <div className="gap-1.5">
-            <Label htmlFor="picture">Picture</Label>
-            <Input
-              id="picture"
-              type="file"
-              multiple
-              onChange={handleFileChange} // Handle file change
-            />
-          </div>
+    <div>
+      <div className="mb-4">
+        <Label htmlFor="picture">Picture</Label>
+        <Input
+          id="picture"
+          type="file"
+          multiple
+          onChange={handleFileChange}
+        />
+      </div>
+      <div className="flex gap-2 flex-wrap">
+        {currentPictures.map((picture: Pictures, index: number) => {
+          if (!picture.img) {
+            return null;
+          }
 
-          {picturesData.map((picture, index) => (
-            <div key={index} className="relative">
+          return (
+            <div key={picture.img.name} className="relative">
+              <p>{index}</p>
               <Button
                 type="button"
                 className="w-10 absolute right-[5px] top-[5px]"
@@ -87,20 +71,20 @@ export const AddImage: FC<Props> = ({ setPictures }) => {
                 alt={`picture-${index}`}
               />
               <div className="absolute bottom-[0] bg-white w-full">
+                <p>{picture.desc}</p>
                 <InputField
                   name={`pictures[${index}].desc`}
                   placeholder="Note"
-                  control={formMethods.control}
-                  search={true}
+                  control={control}
                   Icon={
                     <IoDocumentTextOutline className="text-gray-500 absolute top-1/2 left-2 transform -translate-y-1/2" />
                   }
                 />
               </div>
             </div>
-          ))}
-        </div>
-      </form>
-    </FormProvider>
+          );
+        })}
+      </div>
+    </div>
   );
 };

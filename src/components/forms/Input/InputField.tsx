@@ -13,9 +13,11 @@ interface InputFieldProps {
   errors?: string;
   reset?: React.ReactNode;
   search?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const InputField: FC<InputFieldProps> = ({ name, label, placeholder, type = "text", control, Icon, errors, reset, search }) => {
+export const InputField: FC<InputFieldProps> = ({ name, label, placeholder, type = "text", control, Icon, errors, reset, search, value = '', onChange }) => {
   return (
     <FormItem>
       <p>{label}</p>
@@ -23,10 +25,13 @@ export const InputField: FC<InputFieldProps> = ({ name, label, placeholder, type
         <Controller
           name={name}
           control={control}
-          defaultValue="TARAS"
+          defaultValue={value}
           render={({ field }) => (
             <div className="relative">
-              <Input className={Icon ? 'pl-7' : ''} type={type} placeholder={placeholder} {...field} />
+              <Input className={Icon ? 'pl-7' : ''} type={type} placeholder={placeholder} {...field}
+                onChange={(e) => {
+                  field.onChange(e);
+                }} />
               {Icon}
             </div>
           )}

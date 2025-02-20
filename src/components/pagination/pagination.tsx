@@ -15,8 +15,8 @@ export const PaginationDemo: FC<{
   itemsPerPage: number;
   paginate: (pageNumber: number) => void;
 }> = ({ currentPage, totalItems, itemsPerPage, paginate }) => {
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  
+  const totalPages = Math.ceil((totalItems ? totalItems : 1) / itemsPerPage);
+
   return (
     <Pagination>
       <PaginationContent>

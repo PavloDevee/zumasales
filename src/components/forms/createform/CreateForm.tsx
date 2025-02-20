@@ -1,16 +1,16 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { FiDelete } from "react-icons/fi";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SelectField } from "../select/SelectField";
 import { InputField } from "../Input/InputField";
 import { CreateFormSchema } from "../validations/validations";
 import { IoDocumentTextOutline } from "react-icons/io5";
-import { Machine, Pictures } from "@/providers/types";
+import { Machine } from "@/providers/types";
 import { AddImage } from "../addImage/AddImage";
+import { ControlForm } from "../select/ControlForm";
 
 interface CreateFormProps {
   onDelete: () => void;
@@ -20,7 +20,6 @@ interface CreateFormProps {
 }
 
 const CreateForm: FC<CreateFormProps> = ({ onDelete, formMachine, collectMachineData, index }) => {
-  const [pictures, setPictures] = useState<Pictures[]>([]);
   const formMethods = useForm<z.infer<typeof CreateFormSchema>>({
     resolver: zodResolver(CreateFormSchema),
     defaultValues: {
@@ -32,12 +31,12 @@ const CreateForm: FC<CreateFormProps> = ({ onDelete, formMachine, collectMachine
       machinetype: "",
       custom: "",
       batteries: "",
-      tires: ""
+      tires: "",
+      pictures: [],
     },
   });
 
-  const onSubmit = (data: Machine) => {
-    data.pictures = pictures;   //set pictures
+  const onSubmit = (data: z.infer<typeof CreateFormSchema>) => {; 
     collectMachineData(index, data);
   };
 
@@ -76,7 +75,7 @@ const CreateForm: FC<CreateFormProps> = ({ onDelete, formMachine, collectMachine
               control={formMethods.control}
               Icon={<IoDocumentTextOutline className="text-gray-500 absolute top-1/2 left-2 transform -translate-y-1/2" />}
             />
-            <SelectField
+            <ControlForm
               name="condition"
               label="Condition"
               control={formMethods.control}
@@ -89,7 +88,7 @@ const CreateForm: FC<CreateFormProps> = ({ onDelete, formMachine, collectMachine
               control={formMethods.control}
               Icon={<IoDocumentTextOutline className="text-gray-500 absolute top-1/2 left-2 transform -translate-y-1/2" />}
             />
-            <SelectField
+            <ControlForm
               name="machinetype"
               label="Machine Type"
               control={formMethods.control}
@@ -117,7 +116,10 @@ const CreateForm: FC<CreateFormProps> = ({ onDelete, formMachine, collectMachine
               Icon={<IoDocumentTextOutline className="text-gray-500 absolute top-1/2 left-2 transform -translate-y-1/2" />}
             />
           </div>
-          <AddImage setPictures={setPictures} />
+          <AddImage
+            control={formMethods.control}
+            onSubmit={onSubmit}
+          />
           <div className="grid gap-2 max-w-[250px] w-full mx-auto">
             <Button type="button" className="w-full" size="default" variant={'delete'} onClick={() => onDelete()}>
               <FiDelete />

@@ -18,8 +18,8 @@ import { database } from "@/firebase/firebase";
 import { generatePDF } from "@/helpers/download";
 import { Inspection, inspectionStatus, Role } from "@/providers/types";
 import { FaFilePdf } from "react-icons/fa";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Status } from "../status/Status";
+import { SelectField } from "../forms/select/SelectField";
 
 interface Props {
   currentItems: Inspection[],
@@ -74,21 +74,13 @@ const TableInspection: FC<Props> = ({ currentItems }) => {
               <TableCell>{invoice.paymentStatus}</TableCell>
               <TableCell>
                 {userRole === Role.Admin ?
-                  <Select
-                    value={''}
-                    onValueChange={(status) => handleStatusChange(invoice.userID, invoice.id, status)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={invoice.status} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {statusInspection.map((status, index) => (
-                        <SelectItem key={index} value={status}>
-                          {status}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select> :
+                  <SelectField
+                    value=""
+                    options={statusInspection}
+                    onChange={(status) => handleStatusChange(invoice.userID, invoice.id, status)}
+                    placeholder={invoice.status}
+                  />
+                  :
                   <Status variant={invoice.status}>{invoice.status}</Status>
                 }
               </TableCell>

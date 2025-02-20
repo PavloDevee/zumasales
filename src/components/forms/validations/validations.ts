@@ -26,7 +26,14 @@ export const CreateFormSchema = z.object({
   machinetype: z.string().optional(),
   custom: z.string().optional(),
   batteries: z.string().optional(),
-  tires: z.string().optional()
+  tires: z.string().optional(),
+  pictures: z.array(
+    z.object({
+      img: z.instanceof(File),
+      desc: z.string(),
+      urlImg: z.string(),
+    })
+  ).optional(),
 });
 
 export const CreateLoginFormSchema = z.object({
