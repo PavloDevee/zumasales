@@ -5,10 +5,10 @@ import { DataProvider } from "@/providers/DataProvider";
 
 interface ProtectedRouteProps {
   element: JSX.Element;
-  requiredRole?: string;
+  allowedRoles?: string[];
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, requiredRole }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, allowedRoles }) => {
   const navigate = useNavigate();
   const { userRole } = useContext(DataProvider);
   const [cookies] = useCookies(['idToken', 'userRole']);
@@ -18,12 +18,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, requiredRole }
     const idToken = cookies.idToken;
     if (!idToken) {
       navigate('/login');
-    } else if (requiredRole && userRole !== requiredRole) {
+    } else if (allowedRoles && !allowedRoles.includes(userRole)) {
       navigate('/inspections');
     } else {
       setIsLoading(false);
     }
-  }, [cookies, navigate, userRole, requiredRole]);
+  }, [cookies, navigate, userRole, allowedRoles]);
 
   if (isLoading) {
     return null;

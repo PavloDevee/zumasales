@@ -55,7 +55,6 @@ export const AddImage: FC<Props> = ({ control, onSubmit}) => {
 
           return (
             <div key={picture.img.name} className="relative">
-              <p>{index}</p>
               <Button
                 type="button"
                 className="w-10 absolute right-[5px] top-[5px]"
@@ -71,7 +70,6 @@ export const AddImage: FC<Props> = ({ control, onSubmit}) => {
                 alt={`picture-${index}`}
               />
               <div className="absolute bottom-[0] bg-white w-full">
-                <p>{picture.desc}</p>
                 <InputField
                   name={`pictures[${index}].desc`}
                   placeholder="Note"

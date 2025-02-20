@@ -6,8 +6,8 @@ export interface IState {
   cookies: { idToken?: string };
   setCookie: (name: "idToken", value: string | undefined, options?: object) => void;
   removeCookie: (name: "idToken", options?: object) => void;
-  data:any;
-  setData:(data:any)=> void;
+  data: any;
+  setData: (data: any) => void;
   userRole: Role;
 }
 
@@ -17,7 +17,8 @@ export interface IProps {
 
 export enum Role {
   Admin = "admin",
-  User = "user"
+  User = "user",
+  Moderator = "moderator"
 }
 
 export enum inspectionStatus {
@@ -29,16 +30,16 @@ export enum inspectionStatus {
 }
 
 export interface Machine {
-  make?: string;        
-  model?: string;       
-  serialnumber?: string; 
-  yearmake?: string;     
-  condition?: string;    
-  machinetype?: string;  
-  custom?: string;       
-  batteries?: string;    
-  tires?: string;    
-  pictures?: Array<Pictures>  
+  make?: string;
+  model?: string;
+  serialnumber?: string;
+  yearmake?: string;
+  condition?: string;
+  machinetype?: string;
+  custom?: string;
+  batteries?: string;
+  tires?: string;
+  pictures?: Array<Pictures>
 }
 
 export interface User {
@@ -52,7 +53,7 @@ export interface User {
 export interface Inspection {
   batteries: string;
   condition: string;
-  createdAt: number; 
+  createdAt: number;
   custom: string;
   id: string;
   machinetype: string;
@@ -66,7 +67,7 @@ export interface Inspection {
   vendorEmail: string;
   yearmake: string;
   email?: string;
-  userID?:string;
+  userID?: string;
   pictures?: Array<Pictures>;
 }
 

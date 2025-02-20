@@ -19,6 +19,7 @@ const Header: FC = () => {
   const navigate = useNavigate();
   const { setUserState, removeCookie, userRole, userState, setData} = useContext(DataProvider);
   const [open, setOpen] = useState(false);
+  const access = userRole === Role.Admin || userRole === Role.Moderator ? true : false;
 
   const logout = () => {
     removeCookie('idToken');
@@ -66,7 +67,7 @@ const Header: FC = () => {
             <h1 className="text-4xl font-bold text-gray-900">Zuma Sales</h1>
           </div>
           <div className="flex-1 flex justify-end">
-            {userRole === Role.Admin && <Button onClick={() => navigate('/admin')} className="mx-2"><LuUserRound />Users</Button>}
+            {access && <Button onClick={() => navigate('/admin')} className="mx-2"><LuUserRound />Users</Button>}
             <DialogCloseButton
               handleLogout={logout}
               confirmBtn="Logout"

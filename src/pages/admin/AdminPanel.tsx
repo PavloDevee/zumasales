@@ -16,10 +16,10 @@ import { SelectField } from "@/components/forms/select/SelectField";
 const AdminPanel: FC = () => {
   const [data, setData] = useState<any>([]);
   const [filterData, setFilterData] = useState(data);
-  const { userState } = useContext(DataProvider);
+  const { userState, userRole } = useContext(DataProvider);
   const navigate = useNavigate();
 
-  const roles = [Role.Admin, Role.User];
+  const roles = Object.values(Role);
 
   useEffect(() => {
     const usersRef = ref(database, 'users');
@@ -62,7 +62,12 @@ const AdminPanel: FC = () => {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(7);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const handleItemsPerPageChange = (value: string) => {
+    setItemsPerPage(Number(value));
+    setCurrentPage(1);
+  };
 
   // Calculate the current page's data slice
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -105,7 +110,7 @@ const AdminPanel: FC = () => {
                         options={roles}
                         onChange={(newRole) => handleRoleChange(invoice.id, newRole)}
                         placeholder={invoice.role}
-                        disabled={invoice.id === userState.uid ? true : false}
+                        disabled={invoice.id === userState.uid || userRole === Role.Moderator ? true : false}
                       />
                     </TableCell>
                     <TableCell >{invoice.id}</TableCell>
@@ -115,12 +120,22 @@ const AdminPanel: FC = () => {
             </Table>
           </div>
         </div>
-        <PaginationDemo
-          currentPage={currentPage}
-          totalItems={filterData.length}
-          itemsPerPage={itemsPerPage}
-          paginate={paginate}
-        />
+        <div className="relative">
+          <PaginationDemo
+            currentPage={currentPage}
+            totalItems={filterData.length}
+            itemsPerPage={itemsPerPage}
+            paginate={paginate}
+          />
+          <div className="w-[70px] absolute end-[0] top-[0]">
+            <SelectField
+              value={String(itemsPerPage)}
+              options={['5', '10', '30', '50', '100']}
+              onChange={handleItemsPerPageChange}
+              placeholder="Items per page"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

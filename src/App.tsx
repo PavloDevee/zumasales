@@ -13,15 +13,13 @@ function App() {
   return (
     <MyDataProvider>
       <Router>
-        {/* <div> */}
-          <Routes>
-            <Route path="/" element={<Navigate to="/login" />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/inspections" element={<ProtectedRoute element={<Inspections />} />} />
-            <Route path="/inspections/create" element={<ProtectedRoute element={<Create />} />} />
-            <Route path="/admin" element={<ProtectedRoute element={<AdminPanel />} requiredRole={Role.Admin} />} />
-          </Routes>
-        {/* </div> */}
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/inspections" element={<ProtectedRoute element={<Inspections />} />} />
+          <Route path="/inspections/create" element={<ProtectedRoute element={<Create />} />} />
+          <Route path="/admin" element={<ProtectedRoute element={<AdminPanel />} allowedRoles={[Role.Admin, Role.Moderator]} />}/>
+        </Routes>
       </Router>
       <ToastContainer
         position="top-right"

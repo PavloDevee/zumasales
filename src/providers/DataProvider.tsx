@@ -29,7 +29,7 @@ export const MyDataProvider: React.FC<IProps> = ({ children }) => {
       get(child(dbRef, `users/${userState.uid}`)).then((snapshot) => {
         if (snapshot.exists()) {
           setUserRole(snapshot.val().role);
-          if (userRole === Role.Admin) { //get all inspection or only for one user
+          if (userRole === Role.Admin || userRole === Role.Moderator) {
             getAllData();
           } else {
             getData();
@@ -41,7 +41,7 @@ export const MyDataProvider: React.FC<IProps> = ({ children }) => {
         toast.error(error);
       });
     }
-  }, [userState,userRole])
+  }, [userState, userRole])
 
   const getAllData = () => {
     const starCountRef = ref(database, `users`);
