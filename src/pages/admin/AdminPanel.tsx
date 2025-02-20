@@ -6,12 +6,12 @@ import { database } from "@/firebase/firebase";
 import { DataProvider } from "@/providers/DataProvider";
 import { toast } from "react-toastify";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Role } from "@/providers/types";
 import { Button } from "@/components/ui/button";
 import { RiArrowGoBackFill } from "react-icons/ri";
 import { FilterField } from "@/components/filter/filter";
 import { PaginationDemo } from "@/components/pagination/pagination";
+import { SelectField } from "@/components/forms/select/SelectField";
 
 const AdminPanel: FC = () => {
   const [data, setData] = useState<any>([]);
@@ -100,21 +100,13 @@ const AdminPanel: FC = () => {
                     <TableCell className="font-medium text-left">{invoice.email}</TableCell>
                     <TableCell>{invoice.username}</TableCell>
                     <TableCell>
-                      <Select
-                        value={''}
-                        onValueChange={(newRole) => handleRoleChange(invoice.id, newRole)}
-                        disabled={invoice.id === userState.uid}>
-                        <SelectTrigger>
-                          <SelectValue placeholder={invoice.role} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {roles.map((role) => (
-                            <SelectItem key={role} value={role}>
-                              {role}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <SelectField
+                        value=""
+                        options={roles}
+                        onChange={(newRole) => handleRoleChange(invoice.id, newRole)}
+                        placeholder={invoice.role}
+                        disabled={invoice.id === userState.uid ? true : false}
+                      />
                     </TableCell>
                     <TableCell >{invoice.id}</TableCell>
                   </TableRow>

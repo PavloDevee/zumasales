@@ -57,7 +57,7 @@ export const MyDataProvider: React.FC<IProps> = ({ children }) => {
               obj[key].inspections[keyIns].userID = key;
               obj[key].inspections[keyIns].email = obj[key].email
             }
-            inspection.push(...Object.values(obj[key].inspections) as Inspection[]);
+            obj && inspection.push(...Object.values(obj[key].inspections) as Inspection[]);
           }
         }
         setData(inspection);
@@ -76,7 +76,7 @@ export const MyDataProvider: React.FC<IProps> = ({ children }) => {
           for (const key in obj) {
             obj[key].id = key;
           }
-          setData(Object.values(obj));
+          obj && setData(Object.values(obj));
         } else {
           toast.error("No data available");
         }
