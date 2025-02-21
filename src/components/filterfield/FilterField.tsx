@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, useContext } from "react"
 
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,12 +9,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldFormSchema } from "../forms/validations/validations";
 import { RiMenuSearchLine } from "react-icons/ri";
 import { LuDelete } from "react-icons/lu";
+import { Inspection } from "@/providers/types";
+import { DataProvider } from "@/providers/DataProvider";
+import { search } from "@/helpers/filter";
 
 interface Props {
-  setName: (field: string) => void;
+  setFilterData: (field: Inspection[]) => void;
 }
 
-export const FilterField: FC<Props> = ({ setName }) => {
+export const FilterField: FC<Props> = ({ setFilterData }) => {
+  const { data } = useContext(DataProvider);
 
   const form = useForm<z.infer<typeof FieldFormSchema>>({
     resolver: zodResolver(FieldFormSchema),
@@ -23,14 +27,14 @@ export const FilterField: FC<Props> = ({ setName }) => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof FieldFormSchema>) => {
-    const field = data.field ? data.field : '';
-    setName(field);
+  const onSubmit = (formData: z.infer<typeof FieldFormSchema>) => {
+    const field = formData.field ? formData.field : '';
+    setFilterData(search(data, field));
   }
 
   const clear = () => {
     form.reset();
-    setName('');
+    setFilterData(search(data, ''));
   }
 
   return (
@@ -46,8 +50,8 @@ export const FilterField: FC<Props> = ({ setName }) => {
           />
         </div>
         <div className="pt-1">
-          <Button type="button"  onClick={clear}>
-            <LuDelete size={20}className="text-red-500"/>
+          <Button type="button" onClick={clear}>
+            <LuDelete size={20} className="text-red-500" />
           </Button>
         </div>
       </form>

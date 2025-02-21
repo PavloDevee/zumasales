@@ -9,15 +9,17 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Role } from "@/providers/types";
 import { Button } from "@/components/ui/button";
 import { RiArrowGoBackFill } from "react-icons/ri";
-import { FilterField } from "@/components/filter/filter";
 import { PaginationDemo } from "@/components/pagination/pagination";
 import { SelectField } from "@/components/forms/select/SelectField";
+import { FilterField } from "@/components/filterfield/FilterField";
 
 const AdminPanel: FC = () => {
-  const [data, setData] = useState<any>([]);
-  const [filterData, setFilterData] = useState(data);
-  const { userState, userRole } = useContext(DataProvider);
   const navigate = useNavigate();
+  const [filterData, setFilterData] = useState<any>([]);
+  const { userState, userRole } = useContext(DataProvider);
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const roles = Object.values(Role);
 
@@ -33,7 +35,6 @@ const AdminPanel: FC = () => {
           user.id = key;
           usersArray.push(user);
         }
-        setData(usersArray);
         setFilterData(usersArray);
       } else {
         toast.error("No users data available");
@@ -51,18 +52,6 @@ const AdminPanel: FC = () => {
         toast.error("Failed to update role");
       });
   };
-
-  const setName = (newName: string) => {
-    const arr = data.filter((item: any) =>
-      item.email.includes(newName) ||
-      item.role.includes(newName) ||
-      item.username.toString().includes(newName)
-    );
-    setFilterData(arr);
-  };
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const handleItemsPerPageChange = (value: string) => {
     setItemsPerPage(Number(value));
@@ -86,7 +75,7 @@ const AdminPanel: FC = () => {
               <RiArrowGoBackFill />
               Table Inspection
             </Button>
-            <FilterField setName={setName} />
+            <FilterField setFilterData={setFilterData} />
           </div>
           <div className="mt-4">
             <Table>

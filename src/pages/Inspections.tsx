@@ -5,30 +5,23 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/header/Header";
 import TableInspection from "@/components/table/TableInspection";
 import { Button } from "@/components/ui/button";
-import { FilterField } from "@/components/filter/filter";
 import { DataProvider } from "@/providers/DataProvider";
 import { PaginationDemo } from "@/components/pagination/pagination";
-import { Inspection } from "@/providers/types";
 import { SelectField } from "@/components/forms/select/SelectField";
+import { sortByDate } from "@/helpers/sort";
+import { FilterField } from "@/components/filterfield/FilterField";
+import { RiSortAsc, RiSortDesc } from "react-icons/ri";
 
 const Inspections: FC = () => {
   const navigate = useNavigate();
   const { data } = useContext(DataProvider);
   const [filterData, setFilterData] = useState(data);
-
-  const setName = (newName: string) => { //Search table
-    const arr = data.filter((item: Inspection) =>
-      item.email?.includes(newName) ||
-      item.vendorEmail.includes(newName) ||
-      item.createdAt.toString().includes(newName) ||
-      item.status.toString().includes(newName)
-    );
-    setFilterData(arr);
-  };
+  const [sortCount, setSortCount] = useState(false);
 
   useEffect(() => {
-    setFilterData(data);
-  }, [data]);
+    const sortedData = sortByDate([...data], sortCount);
+    setFilterData(sortedData);
+  }, [data, sortCount]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -55,7 +48,14 @@ const Inspections: FC = () => {
               <IoIosAddCircleOutline style={{ color: '#00FF7F' }} />
               Create Inspection
             </Button>
-            <FilterField setName={setName} />
+            <div className="flex items-center gap-2">
+              <div className="mt-1">
+                <Button onClick={() => { setSortCount(!sortCount) }}>
+                  {sortCount ? <RiSortAsc /> : <RiSortDesc />}
+                </Button>
+              </div>
+              <FilterField setFilterData={setFilterData} />
+            </div>
           </div>
           <TableInspection currentItems={currentItems} />
         </div>
