@@ -32,9 +32,10 @@ const AdminPanel: FC = () => {
 
         for (const key in users) {
           const user = users[key];
-          user.id = key;
+          user.uid = key;
           usersArray.push(user);
         }
+        console.log(usersArray)
         setFilterData(usersArray);
       } else {
         toast.error("No users data available");
@@ -92,17 +93,17 @@ const AdminPanel: FC = () => {
                 {currentItems.map((invoice: any, index: number) => (
                   <TableRow key={index}>
                     <TableCell className="font-medium text-left">{invoice.email}</TableCell>
-                    <TableCell>{invoice.username}</TableCell>
+                    <TableCell>{invoice.displayName}</TableCell>
                     <TableCell>
                       <SelectField
                         value=""
                         options={roles}
-                        onChange={(newRole) => handleRoleChange(invoice.id, newRole)}
+                        onChange={(newRole) => handleRoleChange(invoice.uid, newRole)}
                         placeholder={invoice.role}
-                        disabled={invoice.id === userState.uid || userRole === Role.Moderator ? true : false}
+                        disabled={invoice.uid === userState.uid || userRole === Role.Moderator ? true : false}
                       />
                     </TableCell>
-                    <TableCell >{invoice.id}</TableCell>
+                    <TableCell >{invoice.uid}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

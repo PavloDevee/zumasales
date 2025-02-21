@@ -39,7 +39,7 @@ const LoginForm: FC<LoginFormProps> = ({ login }) => {
     defaultValues: {
       password: "",
       email: "",
-      username: "", // Only necessary for signup
+      displayName: "", // Only necessary for signup
     },
   });
 
@@ -53,14 +53,14 @@ const LoginForm: FC<LoginFormProps> = ({ login }) => {
         .then((userCredential) => {
           const user = userCredential.user;
           updateProfile(user, {
-            displayName: data.username
+            displayName: data.displayName
           })
             .then(() => {
               user.getIdToken(true)
                 .then((idToken) => {
                   saveUserToLocalStorage(userField(user));
                   setUserState(userField(user));
-                  writeUser(user.uid, data.username || 'Guest', data.email);
+                  writeUser(user.uid, data.displayName || 'Guest', data.email);
                   setCookie('idToken', idToken);
                   navigate('/inspections');
                 })
@@ -147,11 +147,11 @@ const LoginForm: FC<LoginFormProps> = ({ login }) => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full grid gap-2">
           {!login && (
             <InputField
-              name="username"
+              name="displayName"
               label="User Name"
               placeholder="Choose your username"
               control={form.control}
-              errors={form.formState.errors.username?.message}
+              errors={form.formState.errors.displayName?.message}
               Icon={<FiUser className="text-gray-500 absolute top-1/2 left-2 transform -translate-y-1/2" />}
             />
           )}

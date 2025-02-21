@@ -1,8 +1,9 @@
+import { Inspection } from '@/providers/types';
 import { jsPDF } from 'jspdf';
 
 import autoTable from "jspdf-autotable";
 
-export const generatePDF = async (item: any) => {
+export const generatePDF = async (item: Inspection) => {
   const doc = new jsPDF();
 
   doc.setFontSize(22);
@@ -61,10 +62,14 @@ export const generatePDF = async (item: any) => {
       doc.addImage(base64Image, "JPEG", xPosition, yPosition, 80, 50);
     }
   }
-
-  doc.save("inspection_report.pdf");
+  
+  const createdAt = new Date(item.createdAt).toLocaleDateString('uk-UA', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  })
+  doc.save(`inspection_report_${item.email}_${createdAt}.pdf`);
 };
-
 
 const convertImageToBase64 = (url: string) => {
   return fetch(url)

@@ -44,7 +44,7 @@ const TableInspection: FC<Props> = ({ currentItems }) => {
       });
   };
 
-  const handleGeneratePDF = async (invoice: any) => {
+  const handleGeneratePDF = async (invoice: Inspection) => {
     setLoadingState(prevState => ({
       ...prevState,
       [invoice.id]: true,
@@ -79,25 +79,25 @@ const TableInspection: FC<Props> = ({ currentItems }) => {
           </tr>
         </TableHeader>
         <TableBody>
-          {currentItems.map((invoice: any, index: number) => (
+          {currentItems.map((invoice: Inspection, index: number) => (
             <TableRow key={index}>
               <TableCell className="font-medium text-left">{invoice.vendorEmail}</TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
+              <TableCell>{invoice.custom}</TableCell>
               <TableCell>
                 {access ?
                   <SelectField
                     value=""
                     options={statusInspection}
-                    onChange={(status) => handleStatusChange(invoice.userID, invoice.id, status)}
+                    onChange={(status) => handleStatusChange(invoice.uid, invoice.id, status)}
                     placeholder={invoice.status}
                   />
                   :
-                  <Status variant={invoice.status}>{invoice.status}</Status>
+                  <Status variant={invoice.status as inspectionStatus}>{invoice.status}</Status>
                 }
               </TableCell>
-              <TableCell>{invoice.paymentMethod}</TableCell>
+              <TableCell>{invoice.model}</TableCell>
               <TableCell>{invoice.createdAt ? new Date(invoice.createdAt).toLocaleString() : "N/A"}</TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
+              <TableCell>{invoice.custom}</TableCell>
               {access &&
                 <TableCell>
                   <div className="flex justify-center relative">
@@ -112,7 +112,7 @@ const TableInspection: FC<Props> = ({ currentItems }) => {
                 <TableCell className="text-right">
                   <DialogCloseButton
                     variant="delete"
-                    handleLogout={() => { deleteInspection(invoice.userID, invoice.id) }}
+                    handleLogout={() => { deleteInspection(invoice.uid, invoice.id) }}
                     confirmBtn="Delete"
                     descText="Do you really want to delete inspection?" />
                 </TableCell>

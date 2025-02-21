@@ -19,7 +19,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, allowedRoles }
     if (!idToken) {
       navigate('/login');
     } else if (allowedRoles && !allowedRoles.includes(userRole)) {
-      navigate('/404');
+      navigate('/inspections');
     } else {
       setIsLoading(false);
     }

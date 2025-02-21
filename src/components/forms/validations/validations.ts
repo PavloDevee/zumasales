@@ -12,7 +12,7 @@ export const FormSchema = (login: boolean) => z.object({
     .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter." })
     .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter." })
     .regex(/[0-9]/, { message: "Password must contain at least one number." }),
-  username: login
+    displayName: login
     ? z.string().optional()
     : z.string().min(2, { message: "Username must be at least 2 characters." }),
 });

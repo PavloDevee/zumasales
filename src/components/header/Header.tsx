@@ -6,7 +6,7 @@ import { DialogCloseButton } from "../modal/Modal";
 import { DataProvider } from "@/providers/DataProvider";
 import { removeUserToLocalStorage, saveUserToLocalStorage } from "@/helpers/localStore";
 import { Button } from "../ui/button";
-import { Role } from "@/providers/types";
+import { Role, User } from "@/providers/types";
 import { LuUserRound } from "react-icons/lu";
 import { EditUser } from "../modal/EditUser";
 import { ref, update } from "firebase/database";
@@ -35,7 +35,7 @@ const Header: FC = () => {
     if (user) {
       const promises = [
         update(userRef, {
-          username: newName
+          displayName: newName
         }),
         updateProfile(user, {
           displayName: newName
@@ -45,7 +45,7 @@ const Header: FC = () => {
       Promise.all(promises)
         .then(() => {
           userState.displayName = newName;
-          saveUserToLocalStorage(userState);
+          saveUserToLocalStorage(userState as User);
           setOpen(false);
           toast.success("Name successfully updated");
         })

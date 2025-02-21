@@ -1,10 +1,11 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { Inspection, IProps, IState, Role, User } from './types';
+import {  Inspection, IProps, IState, Role, User } from './types';
 import { getUserToLocalStorage } from '@/helpers/localStore';
 import { useCookies } from 'react-cookie';
 import { child, get, onValue, ref } from 'firebase/database';
 import { toast } from 'react-toastify';
 import { database } from '@/firebase/firebase';
+import { objModify, objModifyAll } from './modifications';
 
 export const DataProvider = createContext<IState>({
   userState: {},
@@ -47,20 +48,7 @@ export const MyDataProvider: React.FC<IProps> = ({ children }) => {
     const starCountRef = ref(database, `users`);
     onValue(starCountRef, (snapshot) => {
       if (snapshot.exists()) {
-        const obj = snapshot.val();
-        const inspection = [];
-        for (const key in obj) {
-          obj[key].id = key;
-          if (obj[key].inspections) {
-            for (const keyIns in obj[key].inspections) {
-              obj[key].inspections[keyIns].id = keyIns;
-              obj[key].inspections[keyIns].userID = key;
-              obj[key].inspections[keyIns].email = obj[key].email
-            }
-            obj && inspection.push(...Object.values(obj[key].inspections) as Inspection[]);
-          }
-        }
-        setData(inspection);
+        setData(objModifyAll(snapshot.val()));
       } else {
         toast.error("No data available");
       }
@@ -73,10 +61,7 @@ export const MyDataProvider: React.FC<IProps> = ({ children }) => {
       onValue(starCountRef, (snapshot) => {
         if (snapshot.exists()) {
           const obj = snapshot.val().inspections;
-          for (const key in obj) {
-            obj[key].id = key;
-          }
-          obj && setData(Object.values(obj));
+          obj && setData(objModify(obj));
         } else {
           toast.error("No data available");
         }

@@ -1,13 +1,13 @@
 import { ReactNode } from 'react';
 
 export interface IState {
-  userState: any;
+  userState: Partial<User>;
   setUserState: React.Dispatch<React.SetStateAction<any>>;
   cookies: { idToken?: string };
   setCookie: (name: "idToken", value: string | undefined, options?: object) => void;
   removeCookie: (name: "idToken", options?: object) => void;
-  data: any;
-  setData: (data: any) => void;
+  data: Inspection[];
+  setData: (data: Inspection[]) => void;
   userRole: Role;
 }
 
@@ -45,9 +45,9 @@ export interface Machine {
 export interface User {
   displayName: string;
   email: string;
-  emailVerified: boolean;
-  isAnonymous: boolean;
-  uid: string;
+  uid?: string;
+  inspections?: Record<string, Inspection>;
+  role?: Role;
 }
 
 export interface Inspection {
@@ -55,19 +55,18 @@ export interface Inspection {
   condition: string;
   createdAt: number;
   custom: string;
-  id: string;
   machinetype: string;
   make: string;
   model: string;
   note: string;
-  role: string;
   serialnumber: string;
   status: string;
   tires: string;
   vendorEmail: string;
   yearmake: string;
-  email?: string;
-  userID?: string;
+  id: string;
+  email: string;
+  uid: string;
   pictures?: Array<Pictures>;
 }
 
