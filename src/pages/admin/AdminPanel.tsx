@@ -1,47 +1,30 @@
 import { FC, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/header/Header";
-import { onValue, ref, update } from "firebase/database";
+import { ref, update } from "firebase/database";
 import { database } from "@/firebase/firebase";
 import { DataProvider } from "@/providers/DataProvider";
 import { toast } from "react-toastify";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Role } from "@/providers/types";
+import { Role, User } from "@/providers/types";
 import { Button } from "@/components/ui/button";
 import { RiArrowGoBackFill } from "react-icons/ri";
 import { PaginationDemo } from "@/components/pagination/pagination";
 import { SelectField } from "@/components/forms/select/SelectField";
 import { FilterField } from "@/components/filterfield/FilterField";
+import { searchUser } from "@/helpers/filter";
 
 const AdminPanel: FC = () => {
+  const { userState, userRole, users } = useContext(DataProvider);
   const navigate = useNavigate();
-  const [filterData, setFilterData] = useState<any>([]);
-  const { userState, userRole } = useContext(DataProvider);
-  
+  const [filterData, setFilterData] = useState<User[]>([]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
+  useEffect(()=>{setFilterData(users)},[users]);
+
   const roles = Object.values(Role);
-
-  useEffect(() => {
-    const usersRef = ref(database, 'users');
-    onValue(usersRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const users = snapshot.val();
-        const usersArray = [];
-
-        for (const key in users) {
-          const user = users[key];
-          user.uid = key;
-          usersArray.push(user);
-        }
-        console.log(usersArray)
-        setFilterData(usersArray);
-      } else {
-        toast.error("No users data available");
-      }
-    });
-  }, []);
 
   const handleRoleChange = (userId: string, newRole: string) => {
     const userRef = ref(database, `users/${userId}`);
@@ -66,6 +49,14 @@ const AdminPanel: FC = () => {
   // Pagination logic to change pages
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+  const onFieldChange=(field:string)=>{
+    setFilterData(searchUser(users, field));
+  }
+
+  const onClearField=()=>{
+    setFilterData(searchUser(users, ''));
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -76,7 +67,7 @@ const AdminPanel: FC = () => {
               <RiArrowGoBackFill />
               Table Inspection
             </Button>
-            <FilterField setFilterData={setFilterData} />
+            <FilterField onFieldChange={onFieldChange} onClearField={onClearField}/>
           </div>
           <div className="mt-4">
             <Table>
@@ -90,17 +81,16 @@ const AdminPanel: FC = () => {
                 </tr>
               </TableHeader>
               <TableBody>
-                {currentItems.map((invoice: any, index: number) => (
+                {currentItems.map((invoice: User, index: number) => (
                   <TableRow key={index}>
                     <TableCell className="font-medium text-left">{invoice.email}</TableCell>
                     <TableCell>{invoice.displayName}</TableCell>
                     <TableCell>
                       <SelectField
-                        value=""
+                        value={invoice.role}
                         options={roles}
                         onChange={(newRole) => handleRoleChange(invoice.uid, newRole)}
-                        placeholder={invoice.role}
-                        disabled={invoice.uid === userState.uid || userRole === Role.Moderator ? true : false}
+                        disabled={invoice.uid === userState[0].uid || userRole === Role.Moderator ? true : false}
                       />
                     </TableCell>
                     <TableCell >{invoice.uid}</TableCell>

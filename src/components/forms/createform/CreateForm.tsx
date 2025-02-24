@@ -79,7 +79,7 @@ const CreateForm: FC<CreateFormProps> = ({ onDelete, formMachine, collectMachine
               name="condition"
               label="Condition"
               control={formMethods.control}
-              options={["Light", "Dark", "System"]}
+              options={["New", "Used"]}
             />
             <InputField
               name="yearmake"
@@ -92,7 +92,7 @@ const CreateForm: FC<CreateFormProps> = ({ onDelete, formMachine, collectMachine
               name="machinetype"
               label="Machine Type"
               control={formMethods.control}
-              options={["Light", "Dark", "System"]}
+              options={["Scissor lifts","Boom Lifts","Trailers","Telehandlers","Telehandler Attachments","Towble Booms","Other"]}
             />
             <InputField
               name="custom"

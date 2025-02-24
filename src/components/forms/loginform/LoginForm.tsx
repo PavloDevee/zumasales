@@ -59,7 +59,7 @@ const LoginForm: FC<LoginFormProps> = ({ login }) => {
               user.getIdToken(true)
                 .then((idToken) => {
                   saveUserToLocalStorage(userField(user));
-                  setUserState(userField(user));
+                  setUserState([userField(user)]);
                   writeUser(user.uid, data.displayName || 'Guest', data.email);
                   setCookie('idToken', idToken);
                   navigate('/inspections');
@@ -84,7 +84,7 @@ const LoginForm: FC<LoginFormProps> = ({ login }) => {
           user.getIdToken(true)
             .then((idToken) => {
               saveUserToLocalStorage(userField(user));
-              setUserState(userField(user));
+              setUserState([userField(user)]);
               setCookie('idToken', idToken);
               navigate('/inspections');
             })
@@ -106,9 +106,8 @@ const LoginForm: FC<LoginFormProps> = ({ login }) => {
         const token = credential?.accessToken;
         const user = result.user;
         saveUserToLocalStorage(userField(user));
-        setUserState(userField(user));
+        setUserState([userField(user)]);
         setCookie('idToken', token);
-
         const dbRef = ref(database);
         get(child(dbRef, `users/${user.uid}`)).then((snapshot) => {
           if (!snapshot.exists()) {

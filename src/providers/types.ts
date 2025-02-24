@@ -1,13 +1,15 @@
 import { ReactNode } from 'react';
 
 export interface IState {
-  userState: Partial<User>;
-  setUserState: React.Dispatch<React.SetStateAction<any>>;
+  userState: User[]
+  setUserState: (data: User[]) => void;
   cookies: { idToken?: string };
   setCookie: (name: "idToken", value: string | undefined, options?: object) => void;
   removeCookie: (name: "idToken", options?: object) => void;
   data: Inspection[];
   setData: (data: Inspection[]) => void;
+  users: User[];
+  setUsers: (data: User[]) => void;
   userRole: Role;
 }
 
@@ -45,7 +47,7 @@ export interface Machine {
 export interface User {
   displayName: string;
   email: string;
-  uid?: string;
+  uid: string;
   inspections?: Record<string, Inspection>;
   role?: Role;
 }

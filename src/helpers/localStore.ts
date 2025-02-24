@@ -7,7 +7,7 @@ export function saveUserToLocalStorage(user: User) {
 export function getUserToLocalStorage() {
     const userData = localStorage.getItem('user');
     if (userData) return JSON.parse(userData);
-    else return null;
+    else return [];
 }
 
 export function removeUserToLocalStorage() {

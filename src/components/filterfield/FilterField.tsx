@@ -1,4 +1,4 @@
-import { FC, useContext } from "react"
+import { FC } from "react"
 
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -10,15 +10,14 @@ import { FieldFormSchema } from "../forms/validations/validations";
 import { RiMenuSearchLine } from "react-icons/ri";
 import { LuDelete } from "react-icons/lu";
 import { Inspection } from "@/providers/types";
-import { DataProvider } from "@/providers/DataProvider";
-import { search } from "@/helpers/filter";
 
 interface Props {
-  setFilterData: (field: Inspection[]) => void;
+  setFilterData?: (field: Inspection[]) => void;
+  onFieldChange: (field: string) => void;
+  onClearField:() => void;
 }
 
-export const FilterField: FC<Props> = ({ setFilterData }) => {
-  const { data } = useContext(DataProvider);
+export const FilterField: FC<Props> = ({ onFieldChange, onClearField }) => {
 
   const form = useForm<z.infer<typeof FieldFormSchema>>({
     resolver: zodResolver(FieldFormSchema),
@@ -29,12 +28,12 @@ export const FilterField: FC<Props> = ({ setFilterData }) => {
 
   const onSubmit = (formData: z.infer<typeof FieldFormSchema>) => {
     const field = formData.field ? formData.field : '';
-    setFilterData(search(data, field));
+    onFieldChange(field);
   }
 
   const clear = () => {
     form.reset();
-    setFilterData(search(data, ''));
+    onClearField();
   }
 
   return (

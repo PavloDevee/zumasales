@@ -5,7 +5,7 @@ export const uploadImages = (data: any[]): Promise<void[]> => {
   const storage = getStorage();
 
   const uploadPromises = data.map(async (item) => {
-    if (item.pictures && item.pictures.length > 0 && item.pictures.img !== null) {
+    if (item && item.pictures.length > 0 && item.pictures.img !== null) {
       for (let i = 0; i < item.pictures.length; i++) {
         const picture = item.pictures[i];
 

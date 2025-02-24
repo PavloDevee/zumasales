@@ -23,14 +23,15 @@ const Header: FC = () => {
 
   const logout = () => {
     removeCookie('idToken');
-    setUserState(null);
+    setUserState([]);
     navigate('/');
     removeUserToLocalStorage();
     setData([]);
   }
 
   const setName = (newName: string) => {
-    const userRef = ref(database, `users/${userState.uid}`);
+    if(!userState) return;
+    const userRef = ref(database, `users/${userState[0].uid}`);
     const user = auth.currentUser;
     if (user) {
       const promises = [
@@ -44,8 +45,8 @@ const Header: FC = () => {
 
       Promise.all(promises)
         .then(() => {
-          userState.displayName = newName;
-          saveUserToLocalStorage(userState as User);
+          userState[0].displayName = newName;
+          saveUserToLocalStorage(userState[0] as User);
           setOpen(false);
           toast.success("Name successfully updated");
         })
@@ -60,7 +61,7 @@ const Header: FC = () => {
       <div className="max-w-6xl mx-auto px-2">
         <div className="flex justify-between items-center h-16">
           <div className="flex gap-2 text-xl flex-1">
-            <p>Hello, <span className="font-medium">{userState?.displayName}</span>!</p>
+            <p>Hello, <span className="font-medium">{userState[0]?.displayName}</span>!</p>
             <EditUser setName={setName} open={open} setOpen={setOpen} />
           </div>
           <div className="flex-1 text-center">

@@ -1,4 +1,4 @@
-import { Inspection, User } from "./types";
+import { Inspection, User } from "../types";
 
 export const objModifyAll = (obj: User[]) => {
     const inspection = [];
@@ -10,13 +10,13 @@ export const objModifyAll = (obj: User[]) => {
                 obj[key].inspections[keyIns].uid = key;
                 obj[key].inspections[keyIns].email = obj[key].email
             }
-            obj && inspection.push(...Object.values(obj[key].inspections)); //check
+            inspection.push(...Object.values(obj[key].inspections)); //check
         }
     }
     return inspection;
 }
 
-export const objModify = (obj: Inspection[]) => {
+export const objModify = (obj: Inspection[] | User[]) => { //add id
     for (const key in obj) {
         obj[key].uid = key;
     }

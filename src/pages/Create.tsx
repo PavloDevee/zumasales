@@ -57,7 +57,7 @@ const Create: FC = () => {
       });
       uploadImages(allFormData)
         .then(() => {
-          const inspectionsRef = ref(database, `/users/${userState.uid}/inspections`);
+          const inspectionsRef = ref(database, `/users/${userState[0].uid}/inspections`);
           return Promise.all(allFormData.map((obj) => push(inspectionsRef, obj)));
         })
         .then(() => {

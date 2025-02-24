@@ -11,6 +11,7 @@ import { SelectField } from "@/components/forms/select/SelectField";
 import { sortByDate } from "@/helpers/sort";
 import { FilterField } from "@/components/filterfield/FilterField";
 import { RiSortAsc, RiSortDesc } from "react-icons/ri";
+import { search } from "@/helpers/filter";
 
 const Inspections: FC = () => {
   const navigate = useNavigate();
@@ -30,6 +31,14 @@ const Inspections: FC = () => {
     setItemsPerPage(Number(value));
     setCurrentPage(1);
   };
+
+  const onFieldChange = (field: string) => {
+    setFilterData(search(data, field));
+  }
+
+  const onClearField = () => {
+    setFilterData(search(data, ''));
+  }
 
   // Calculate the current page's data slice
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -54,7 +63,7 @@ const Inspections: FC = () => {
                   {sortCount ? <RiSortAsc /> : <RiSortDesc />}
                 </Button>
               </div>
-              <FilterField setFilterData={setFilterData} />
+              <FilterField onFieldChange={onFieldChange} onClearField={onClearField} />
             </div>
           </div>
           <TableInspection currentItems={currentItems} />
