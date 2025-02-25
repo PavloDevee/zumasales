@@ -62,8 +62,8 @@ const Create: FC = () => {
         })
         .then(() => {
           return Promise.all([
-            sendEmail(userState[0].email, userState[0].displayName, 'The inspection has been successfully created'),
-            sendEmail(data.vendorEmail, '', `The inspection has been successfully created by the user ${userState[0].email}.`)
+            sendEmail(userState[0].email, userState[0].displayName, 'The inspection has been successfully created'), //email for user
+            sendEmail(data.vendorEmail, '', `The inspection has been successfully created by the user ${userState[0].email}.`) //email for vendor
           ]);
         })
         .then(() => {

@@ -17,4 +17,3 @@ export function sendEmail(email: string, name: string, message: string) {
 
   return emailjs.send(emailconfig.emailId, emailconfig.templateId, templateParams)
 }
-
