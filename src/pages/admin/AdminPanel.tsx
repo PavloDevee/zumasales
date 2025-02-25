@@ -13,6 +13,7 @@ import { PaginationDemo } from "@/components/pagination/pagination";
 import { SelectField } from "@/components/forms/select/SelectField";
 import { FilterField } from "@/components/filterfield/FilterField";
 import { searchUser } from "@/helpers/filter";
+import { endpoint } from "@/firebase/endpoint";
 
 const AdminPanel: FC = () => {
   const { userState, userRole, users } = useContext(DataProvider);
@@ -27,7 +28,7 @@ const AdminPanel: FC = () => {
   const roles = Object.values(Role);
 
   const handleRoleChange = (userId: string, newRole: string) => {
-    const userRef = ref(database, `users/${userId}`);
+    const userRef = ref(database, endpoint.getUser(userId));
     update(userRef, { role: newRole })
       .then(() => {
         toast.success("Role updated successfully!");

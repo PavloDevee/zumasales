@@ -6,6 +6,7 @@ import { child, get, onValue, ref } from 'firebase/database';
 import { toast } from 'react-toastify';
 import { database } from '@/firebase/firebase';
 import { objModify, objModifyAll } from './helpers/modifications';
+import { endpoint } from '@/firebase/endpoint';
 
 export const DataProvider = createContext<IState>({
   userState: [],
@@ -30,7 +31,7 @@ export const MyDataProvider: React.FC<IProps> = ({ children }) => {
   useEffect(() => {
     if (userState.length) {
       const dbRef = ref(database);
-      get(child(dbRef, `users/${userState[0].uid}`)).then((snapshot) => {
+      get(child(dbRef, endpoint.getUser(userState[0].uid))).then((snapshot) => {
         if (snapshot.exists()) {
           setUserRole(snapshot.val().role);
           if (userRole === Role.Admin || userRole === Role.Moderator) {
@@ -46,7 +47,7 @@ export const MyDataProvider: React.FC<IProps> = ({ children }) => {
   }, [userState, userRole])
 
   const getAllData = () => {
-    const starCountRef = ref(database, `users`);
+    const starCountRef = ref(database, endpoint.getAllUsers);
     onValue(starCountRef, (snapshot) => {
       if (snapshot.exists()) {
         setData(objModifyAll(snapshot.val()));
@@ -57,9 +58,8 @@ export const MyDataProvider: React.FC<IProps> = ({ children }) => {
     });
   }
 
-
   const getData = () => {
-    const starCountRef = ref(database, `users/${userState[0].uid}`);
+    const starCountRef = ref(database, endpoint.getUser(userState[0].uid));
     onValue(starCountRef, (snapshot) => {
       if (snapshot.exists()) {
         const obj = snapshot.val().inspections;
@@ -69,7 +69,6 @@ export const MyDataProvider: React.FC<IProps> = ({ children }) => {
       }
     });
   }
-
 
   return (
     <DataProvider.Provider value={{

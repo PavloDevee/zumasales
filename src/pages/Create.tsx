@@ -23,6 +23,7 @@ import { inspectionStatus, Machine } from "@/providers/types";
 import { uploadImages } from "@/helpers/uploadImg";
 
 import { ClipLoader } from "react-spinners";
+import { endpoint } from "@/firebase/endpoint";
 
 const Create: FC = () => {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ const Create: FC = () => {
       });
       uploadImages(allFormData)
         .then(() => {
-          const inspectionsRef = ref(database, `/users/${userState[0].uid}/inspections`);
+          const inspectionsRef = ref(database, endpoint.getAllUserInspections(userState[0].uid));
           return Promise.all(allFormData.map((obj) => push(inspectionsRef, obj)));
         })
         .then(() => {

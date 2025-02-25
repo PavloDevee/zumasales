@@ -11,6 +11,7 @@ import { FaFilePdf } from "react-icons/fa";
 import { Status } from "../status/Status";
 import { SelectField } from "../forms/select/SelectField";
 import { ClipLoader } from "react-spinners";
+import { endpoint } from "@/firebase/endpoint";
 
 interface Props {
   currentItems: Inspection[],
@@ -23,7 +24,7 @@ const TableInspection: FC<Props> = ({ currentItems }) => {
   const [loadingState, setLoadingState] = useState<{ [key: string]: boolean }>({});
 
   const deleteInspection = (userId: string, inspectionId: string) => {
-    const inspectionRef = ref(database, `/users/${userId}/inspections/${inspectionId}`);
+    const inspectionRef = ref(database, endpoint.getUserInspection(userId,inspectionId));
     remove(inspectionRef)
       .then(() => {
         toast.success("The inspection has been deleted successfully");
@@ -34,7 +35,7 @@ const TableInspection: FC<Props> = ({ currentItems }) => {
   };
 
   const handleStatusChange = (userId: string, inspectionId: string, status: string) => {
-    const userRef = ref(database, `/users/${userId}/inspections/${inspectionId}`);
+    const userRef = ref(database, endpoint.getUserInspection(userId,inspectionId));
     update(userRef, { status: status })
       .then(() => {
         toast.success("Status updated successfully!");
