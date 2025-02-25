@@ -8,7 +8,7 @@ export const getIcon = (variant: inspectionStatus) => {
       return <MdOutlinePending className="text-inherit" size={20} />;
     case inspectionStatus.completed:
       return <IoMdCheckmarkCircleOutline className="text-inherit" size={20} />;
-    case inspectionStatus.review:
+    case inspectionStatus.canceled:
       return <MdOutlineCancel className="text-inherit" size={20} />;
     default:
       return <IoMdInformationCircleOutline className="text-inherit" size={20} />;

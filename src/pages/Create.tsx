@@ -24,6 +24,7 @@ import { uploadImages } from "@/helpers/uploadImg";
 
 import { ClipLoader } from "react-spinners";
 import { endpoint } from "@/firebase/endpoint";
+import { sendEmail } from "@/emailjs/emailjs";
 
 const Create: FC = () => {
   const navigate = useNavigate();
@@ -35,7 +36,6 @@ const Create: FC = () => {
   const [loading, setLoading] = useState(false);
 
   const FormSchema = CreateLoginFormSchema;
-
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -47,7 +47,6 @@ const Create: FC = () => {
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     if (allFormData.length) {
       setLoading(true);
-
       allFormData.map((machine: any) => {
         if (machine) {
           machine.createdAt = serverTimestamp();
@@ -60,6 +59,12 @@ const Create: FC = () => {
         .then(() => {
           const inspectionsRef = ref(database, endpoint.getAllUserInspections(userState[0].uid));
           return Promise.all(allFormData.map((obj) => push(inspectionsRef, obj)));
+        })
+        .then(() => {
+          return Promise.all([
+            sendEmail(userState[0].email, userState[0].displayName, 'The inspection has been successfully created'),
+            sendEmail(data.vendorEmail, '', `The inspection has been successfully created by the user ${userState[0].email}.`)
+          ]);
         })
         .then(() => {
           toast.success("Inspections have been created successfully");
